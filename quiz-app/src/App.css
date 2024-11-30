@@ -8,7 +8,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 20px;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -31,4 +32,24 @@
   margin: 6px 0;
   padding: 10px;
   border-radius: 5px;
+  cursor: pointer;
+}
+
+.quiz-question li:hover {
+  background-color: #08273e;
+}
+
+.correct-answer {
+  background-color: #4caf50 !important;
+  color: white;
+}
+
+.incorrect-answer {
+  background-color: #f44336 !important;
+  color: white;
+}
+
+.selected-answer {
+  background-color: #08273e !important;
+  color: white;
 }
