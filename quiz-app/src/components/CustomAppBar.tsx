@@ -9,17 +9,21 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 
 function CustomAppBar() {
+    // State to manage the anchor element for the menu
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
 
+    // Function to handle menu open
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
+    // Function to handle menu close
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
 
+    // Function to handle menu item click and navigate to the selected path
     const handleMenuItemClick = (path: string) => {
         navigate(path);
         handleMenuClose();

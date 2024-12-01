@@ -10,27 +10,36 @@ const MediumQuiz: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
   const [showResults, setShowResults] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0);
 
+  // useEffect hook to fetch quiz data
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
+        // Fetch quiz data from the API
         const response = await axios.get('https://opentdb.com/api.php?amount=10&difficulty=medium');
+        // Process the fetched data to include shuffled answers
         const questionsWithAnswers: QuizQuestion[] = response.data.results.map((q: any) => ({
           ...q,
           answers: [...q.incorrect_answers, q.correct_answer].sort(() => Math.random() - 0.5), // Shuffling answers
         }));
+        // Update the state with the fetched questions
         setQuestions(questionsWithAnswers);
+        // Set loading to false after data is fetched
         setLoading(false);
       } catch (err) {
+        // Handle any errors during data fetching
         console.error('Error fetching quiz data:', err);
         setError('Failed to fetch quiz data');
         setLoading(false);
       }
     };
-  
+
+    // Call the fetchQuizData function
     fetchQuizData();
   }, []);
 
+  // Function to handle answer selection
   const handleAnswerClick = (questionIndex: number, answer: string) => {
     setSelectedAnswers(prev => ({
       ...prev,
@@ -38,18 +47,26 @@ const MediumQuiz: React.FC = () => {
     }));
   };
 
+  // Function to show the results
   const handleShowResults = () => {
+    const correctAnswers = questions.reduce((acc, question, index) => {
+      return acc + (selectedAnswers[index] === question.correct_answer ? 1 : 0);
+    }, 0);
+    setScore(correctAnswers);
     setShowResults(true);
   };
 
+  // Render loading state
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // Render error state
   if (error) {
     return <div>{error}</div>;
   }
 
+  // Render the quiz questions and answers
   return (
     <div className="App">
       <header className="App-header">
@@ -57,51 +74,33 @@ const MediumQuiz: React.FC = () => {
           <div key={index} className="quiz-question">
             <h2 dangerouslySetInnerHTML={{ __html: question.question }} />
             <ul>
-              {question.answers && question.answers.length > 0 ? (
-                question.answers.map((answer, i) => (
-                  <li
-                    key={i}
-                    onClick={() => handleAnswerClick(index, answer)}
-                    className={
-                      showResults
-                        ? answer === question.correct_answer 
-                          ? 'correct-answer'
-                          : selectedAnswers[index] === answer 
-                            ? 'incorrect-answer'
-                            : ''
-                        : selectedAnswers[index] === answer 
-                          ? 'selected-answer'
-                          : ''
-                    }
-                    dangerouslySetInnerHTML={{ __html: answer }}
-                  />
-                ))
-              ) : (
-                <li>No answers available</li> // Optional: handle the case if answers are not loaded for some reason
-              )}
+              {question.answers && question.answers.map((answer, i) => (
+                <li
+                  key={i}
+                  onClick={() => handleAnswerClick(index, answer)}
+                  className={
+                    showResults
+                      ? answer === question.correct_answer
+                        ? 'correct-answer'
+                        : selectedAnswers[index] === answer
+                        ? 'incorrect-answer'
+                        : ''
+                      : selectedAnswers[index] === answer
+                      ? 'selected-answer'
+                      : ''
+                  }
+                  dangerouslySetInnerHTML={{ __html: answer }}
+                />
+              ))}
             </ul>
           </div>
         ))}
+        <Button variant="contained" onClick={handleShowResults}>Show Results</Button>
         {showResults && (
           <div className="results">
-            {questions.map((question, index) => (
-              <div key={index}>
-                <p dangerouslySetInnerHTML={{ __html: question.question }} />
-                <p>
-                  Correct Answer: {question.correct_answer}
-                  {selectedAnswers[index] && (
-                    <span>
-                      {' | Your Answer: '}{selectedAnswers[index]} 
-                      {selectedAnswers[index] === question.correct_answer ? 
-                        ' (Correct)' : ' (Incorrect)'}
-                    </span>
-                  )}
-                </p>
-              </div>
-            ))}
+            <h3>You got {score} out of 10 questions correct</h3>
           </div>
         )}
-        <Button variant="contained" onClick={handleShowResults}>Show Results</Button>
       </header>
     </div>
   );
