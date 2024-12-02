@@ -46,9 +46,9 @@ function CustomAppBar() {
                     onClose={handleMenuClose}
                 >
                     <MenuItem onClick={() => handleMenuItemClick('/')}>Home</MenuItem>
-                    <MenuItem onClick={() => handleMenuItemClick('/easy')}>Easy</MenuItem>
-                    <MenuItem onClick={() => handleMenuItemClick('/medium')}>Medium</MenuItem>
-                    <MenuItem onClick={() => handleMenuItemClick('/hard')}>Hard</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('/easy')}>Easy quiz</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('/medium')}>Medium quiz</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('/hard')}>Hard quiz</MenuItem>
                 </Menu>
                 <Typography
                     variant="h6"
